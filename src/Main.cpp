@@ -4,7 +4,7 @@
  * Instructions
  * ------------
  * Welcome! This is the main file of the Nucleo C++ firmware.
- * The code in this source file starts all the control and communication loops 
+ * The code in this source file starts all the control and communication loops
  * required to control the arm. Please, take some time to familiarize yourself with the
  * workflow of the program.
  *
@@ -31,8 +31,8 @@ static PIDimp * pid[DOFs]; // pointer to PID controllers (one for each link)
 HIDSimplePacket coms;      // HID packet handlers
 
 // The following array contains the "home" positions (in encoder ticks) for each
-// of the robot's joints 
-float homePosition[3] = {0,0,0};
+// of the robot's joints
+float homePosition[3] = {1167.25,-428.75,2821.75};
 
 void runPid() {
 	// update all positions fast and together
@@ -102,7 +102,7 @@ int main() {
 		// we will now "zero" the encoder readings
 #ifdef DUMMYMODE // if operating in Dummy Mode, set the initial encoder reading to zero
 		pid[i]->ZeroPID();
-#else            // else, use the values in homePosition 
+#else            // else, use the values in homePosition
 		pid[i]->pidReset(pid[i]->GetPIDPosition() - homePosition[i]);
 #endif
 
