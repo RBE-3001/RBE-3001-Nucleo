@@ -91,14 +91,23 @@ void LabServer::event(float * packet){
    * The following loop reads sensor data (encoders ticks, joint velocities and
    * force readings) and writes it in the response packet.
    */
+
   for(int i = 0; i < myPumberOfPidChannels; i++)
     {
-      float position = myPidObjects[i]->GetPIDPosition();
+	  /*
+	  float position = myPidObjects[i]->GetPIDPosition();
       float velocity = myPidObjects[i]->getVelocity();
       float torque   = myPidObjects[i]->loadCell->read();
 
       packet[(i*3)+0] = position;
       packet[(i*3)+1] = velocity;
       packet[(i*3)+2] = torque;
+*/
+	  packet[(i*3)+0] = 150;
+	  packet[(i*3)+1] = 0.5;
+	  packet[(i*3)+2] = 7;
+
     }
+
+
 }
