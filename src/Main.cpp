@@ -32,7 +32,7 @@ HIDSimplePacket coms;      // HID packet handlers
 
 // The following array contains the "home" positions (in encoder ticks) for each
 // of the robot's joints
-float homePosition[3] = {0,0,0};
+float homePosition[3];
 
 void runPid() {
 	// update all positions fast and together
@@ -43,10 +43,17 @@ void runPid() {
 		pid[i]->updateControl();
 }
 
+
+//Recalibrate Arm function
 void recalibrateArm(){
-	homePosition[0] = (float) pid[0]->getPosition();
-	homePosition[1] = (float) pid[1]->getPosition();
-	homePosition[2] = (float) pid[2]->getPosition();
+	homePosition[0] = (float) pid[0]->GetPIDPosition();
+	homePosition[1] = (float) pid[1]->GetPIDPosition();
+	homePosition[2] = (float) pid[2]->GetPIDPosition();
+#ifdef DEBUG
+	printf("\nGet Position 1: %f \n", homePosition[0]);
+	printf("\nGet Position 2: %f \n", homePosition[1]);
+	printf("\nGet Position 3: %f \n", homePosition[2]);
+#endif
 }
 
 /*
@@ -100,6 +107,9 @@ int main() {
 	// capture 100 ms of encoders before starting
 	wait_ms(100);
 
+	//======= Set home position after initialization of PID ======================
+	recalibrateArm();
+
 	for (int i = 0; i < DOFs; i++) // for each joint,
 			{
 		// reset the PID control after encoders have been updated a few times
@@ -123,8 +133,7 @@ int main() {
 	}
 
 
-	//======= Set home position after initialization of PID ======================
-	recalibrateArm();
+
 
 
 
@@ -177,7 +186,7 @@ int main() {
 
 		// The following code prints out debug statements.
 #ifdef DEBUG_
-// print encoder values for each joint
+			// print encoder values for each joint
 			printf("\r\nEncoder Value = %f , %f , %f", pid[0]->GetPIDPosition(),
 					pid[1]->GetPIDPosition(), pid[2]->GetPIDPosition());
 
