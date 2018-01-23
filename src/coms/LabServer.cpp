@@ -94,7 +94,7 @@ void LabServer::event(float * packet){
 
   for(int i = 0; i < myPumberOfPidChannels; i++)
     {
-	  /*
+
 	  float position = myPidObjects[i]->GetPIDPosition();
       float velocity = myPidObjects[i]->getVelocity();
       float torque   = myPidObjects[i]->loadCell->read();
@@ -102,11 +102,11 @@ void LabServer::event(float * packet){
       packet[(i*3)+0] = position;
       packet[(i*3)+1] = velocity;
       packet[(i*3)+2] = torque;
-*/
+/*
 	  packet[(i*3)+0] = 150;
 	  packet[(i*3)+1] = 0.5;
 	  packet[(i*3)+2] = 7;
-
+*/
     }
 
 
