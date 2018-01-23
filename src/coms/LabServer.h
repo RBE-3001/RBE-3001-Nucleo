@@ -1,3 +1,4 @@
+
 /**
  * @file PidServer.h
  * @brief PidServer for the RBE3001 robotic arm
@@ -22,29 +23,37 @@
  *             integer number.
  */
 
-#ifndef RBE3001_PID_SERVER
-#define RBE3001_PID_SERVER
+#ifndef LAB_SERVER
+#define LAB_SERVER
 
 #include <PID_Bowler.h>
 #include <PacketEvent.h>
 #include "../drivers/MyPid.h"
 #include <cmath>              // needed for std::abs
 
-#define PID_SERVER_ID 37      // identifier for this server
+#define LAB_SERVER_ID 30      // identifier for this server
 
 /**
  *  @brief Class that receives setpoints through HID and sends them to
  *         the PID controller. Extends the `PacketEventAbstract' class.
  */
-class PidServer: public PacketEventAbstract
+class LabServer: public PacketEventAbstract
 {
  private:
   PIDimp ** myPidObjects;    // array of PidServers - one for each joint
   int myPumberOfPidChannels;
 
  public:
-  PidServer (PIDimp ** pidObjects, int numberOfPidChannels)
-    : PacketEventAbstract(PID_SERVER_ID)
+  LabServer (PIDimp ** pidObjects, int numberOfPidChannels)
+ 	 :PacketEventAbstract(LAB_SERVER_ID)
   {
     myPidObjects = pidObjects;
     myPumberOfPidChannels = numberOfPidChannels;
+  }
+
+  // This method is called every time a packet from MATLAB is received
+  // via HID
+  void event(float * buffer);
+};
+
+#endif /* end of include guard: RBE3001_PID_SERVER */
