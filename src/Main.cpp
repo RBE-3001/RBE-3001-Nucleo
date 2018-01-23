@@ -32,7 +32,7 @@ HIDSimplePacket coms;      // HID packet handlers
 
 // The following array contains the "home" positions (in encoder ticks) for each
 // of the robot's joints
-float homePosition[3] = {1167.25,-428.75,2821.75};
+float homePosition[3] = {0,0,0};
 
 void runPid() {
 	// update all positions fast and together
@@ -41,6 +41,12 @@ void runPid() {
 	// next update all control outputs
 	for (int i = 0; i < DOFs; i++)
 		pid[i]->updateControl();
+}
+
+void recalibrateArm(){
+	homePosition[0] = (float) pid[0]->getPosition();
+	homePosition[1] = (float) pid[1]->getPosition();
+	homePosition[2] = (float) pid[2]->getPosition();
 }
 
 /*
@@ -115,6 +121,13 @@ int main() {
 		pid[i]->SetPIDEnabled(true);
 		pid[i]->SetPIDTimed(pid[i]->GetPIDPosition(), 1000); // !FIXME What does this instruction do?
 	}
+
+
+	//======= Set home position after initialization of PID ======================
+	recalibrateArm();
+
+
+
 
 	/*
 	 * ======= PART 2b: Initialize HID communication =============================
