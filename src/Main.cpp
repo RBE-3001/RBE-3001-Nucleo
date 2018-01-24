@@ -49,6 +49,8 @@ void recalibrateArm(){
 	homePosition[0] = (float) pid[0]->GetPIDPosition();
 	homePosition[1] = (float) pid[1]->GetPIDPosition();
 	homePosition[2] = (float) pid[2]->GetPIDPosition();
+
+//If the DEBUG, print values upon initialization
 #ifdef DEBUG
 	printf("\nGet Position 1: %f \n", homePosition[0]);
 	printf("\nGet Position 2: %f \n", homePosition[1]);

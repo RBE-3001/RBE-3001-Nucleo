@@ -56,4 +56,4 @@ class LabServer: public PacketEventAbstract
   void event(float * buffer);
 };
 
-#endif /* end of include guard: RBE3001_PID_SERVER */
+#endif /* end of include guard: PID_SERVER */
