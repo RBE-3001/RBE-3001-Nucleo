@@ -24,7 +24,7 @@ void LabServer::event(float * packet){
   for (int i = 0; i < myPumberOfPidChannels; i++)
     {
       // extract the three setpoint values (one for each joint) from the packet buffer
-      float setpoint = packet[(i*3)+0];
+      float setpoint = packet[(i*3) + 0];
       float velocityTarget = 0; // this is currently unused
       float forceTarget = 0;    // this is currently unused
       //printf("\r\n %i : %f", i,setpoint);
