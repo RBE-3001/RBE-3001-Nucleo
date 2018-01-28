@@ -19,6 +19,7 @@
 #include "coms/PidServer.h"
 #include "coms/DummyServer.h"
 #include "coms/LabServer.h"
+#include "coms/PidConfigServer.h"
 
 // DEFINES
 #define REV2
