@@ -158,7 +158,7 @@ int main() {
 
 	coms.attach(new PidServer(pid, DOFs));
 	//coms.attach(new LabServer(pid, DOFs));
-	pidComs.attach(new PidConfigServer(pid, DOFs));
+	//pidComs.attach(new PidConfigServer(pid, DOFs));
 
 #ifdef DEBUG_
 	printf("\r\n\r\n Initialization complete. \r\n\r\n");
@@ -184,7 +184,7 @@ int main() {
 	while (1) {
 
 		coms.server();
-		pidComs.server();
+		//pidComs.server();
 
 		// The following code prints out debug statements.
 #ifdef DEBUG_
