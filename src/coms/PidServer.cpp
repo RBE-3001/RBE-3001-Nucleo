@@ -19,21 +19,23 @@ void PidServer::event(float * packet){
    * ======= PART 1: Decode setpoints and send commands to the PID controller ==
    */
   
+  bool skipLink = false; //!FIXME Do we need this? If not, let's get rid of it
   
-
   for (int i = 0; i < myPumberOfPidChannels; i++)
     {      
       // extract the three setpoint values (one for each joint) from the packet buffer
       float setpoint = packet[(i*3)+0];
       float velocityTarget = 0; // this is currently unused
       float forceTarget = 0;    // this is currently unused
-
+      //printf("\r\n %i : %f", i,setpoint);
       // get current position from arm 
       float position = myPidObjects[i]->GetPIDPosition();
       
       // now let's initiate motion to the setpoints
 
-      // This will be used if a velocity target is set
+      // !FIXME I am not sure what the next two instructions are for.
+      //        The if statement below always returns false and therefore we never
+      //        enter the clause. Is this code needed? If not, let's get rid of it.
       float timeOfMotion = 0;
       if(velocityTarget>0)
 	timeOfMotion=(std::abs(setpoint-position)/velocityTarget)*1000;// convert from Tics per second to miliseconds
@@ -41,16 +43,16 @@ void PidServer::event(float * packet){
       // !FIXME what is the `bound' method doing?
       bool newUpdate = !myPidObjects[i]->bound(setpoint,
 					       myPidObjects[i]->state.interpolate.set,
-					       0.01,   // This constant are time for time tolerance
+					       0.01,   // !FIXME need to explain what these constants are
 					       0.01);
       
       if(newUpdate)
 	{
 	  // disable interrupts first
-     // the interrupt has to be disabled so that it does not interfere with the pid
 	  __disable_irq();
-	  myPidObjects[i]->SetPIDEnabled(true);
-
+	  myPidObjects[i]->SetPIDEnabled(true); // !FIXME Do we need to do this
+	                                        //  every time?
+	                                        // Can't we just leave it enabled?
 
 	  // go to setpoint in timeBetweenPrints ms, linear interpolation
 	  myPidObjects[i]->SetPIDTimed(setpoint, timeOfMotion); // !FIXME what is `timeBetweenPrints'?
@@ -58,6 +60,13 @@ void PidServer::event(float * packet){
 	  // re-enable interrupts
 	__enable_irq();
 	
+	}
+      
+      else // !FIXME The following clause does not seem to be doing anything.
+	   //        Do we need to keep it?
+	{
+	  //  printf("\r\nPacket write ignored, index %i to %f is already %f",i,setpoint,myPidObjects[i]->state.interpolate.set);
+	  skipLink=true;
 	}
       //  if(skipLink){
       //    for (int i=0;i<15;i++){

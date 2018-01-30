@@ -29,7 +29,6 @@
 Ticker pidTimer;           // implements a timer
 static PIDimp * pid[DOFs]; // pointer to PID controllers (one for each link)
 HIDSimplePacket coms;      // HID packet handlers
-HIDSimplePacket pidComs;
 
 // The following array contains the "home" positions (in encoder ticks) for each
 // of the robot's joints
@@ -158,7 +157,7 @@ int main() {
 
 	coms.attach(new PidServer(pid, DOFs));
 	//coms.attach(new LabServer(pid, DOFs));
-	//pidComs.attach(new PidConfigServer(pid, DOFs));
+	//coms.attach(new PidConfigServer(pid, DOFs));
 
 #ifdef DEBUG_
 	printf("\r\n\r\n Initialization complete. \r\n\r\n");
@@ -184,7 +183,6 @@ int main() {
 	while (1) {
 
 		coms.server();
-		//pidComs.server();
 
 		// The following code prints out debug statements.
 #ifdef DEBUG_
