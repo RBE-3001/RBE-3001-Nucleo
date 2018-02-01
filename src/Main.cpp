@@ -20,8 +20,22 @@
 #define  DOFs  3     // this macro defines the number of joints of the robotic arm
 //#define  DUMMYMODE   // this macro selects the running mode - see instructions above
 
-#define  DEBUG_      // if defined, this macro enables the printing of debug
+//#define  DEBUG_      // if defined, this macro enables the printing of debug
 // statements to the serial port - which can be read with PUTTY
+
+
+//------------ PID Constants
+
+//Base PID
+float kp_base = 0.002; float ki_base = 0.0005; float kd_base = 0.02;
+
+//Shoulder PID
+float kp_arm = 0.005; float ki_arm = 0.0015; float kd_arm = 0.02;
+
+//Wrist PID
+float kp_wrist = 0.005; float ki_wrist = 0; float kd_wrist = 0.03;
+
+
 
 /*
  * ======= PART 1: Global Variables and definition of ancillary functions ======
@@ -110,20 +124,21 @@ int main() {
 	//======= Set home position after initialization of PID ======================
 	recalibrateArm();
 
-	for (int i = 0; i < DOFs; i++) // for each joint,
-			{
+	for (int i = 0; i < DOFs; i++) {
 		// reset the PID control after encoders have been updated a few times
 		pid[i]->InitilizePidController();
 
-		// we will now "zero" the encoder readings
-#ifdef DUMMYMODE // if operating in Dummy Mode, set the initial encoder reading to zero
-		pid[i]->ZeroPID();
-#else            // else, use the values in homePosition
-		pid[i]->pidReset(pid[i]->GetPIDPosition() - homePosition[i]);
-#endif
+		pid[0]->setPIDConstants(kp_base, ki_base, kd_base);
+		pid[1]->setPIDConstants(kp_arm, ki_arm, kd_arm);
+		pid[2]->setPIDConstants(kp_wrist, ki_wrist, kd_wrist);
 
-		// !FIXME Do we need the following two instructions? I'm afraid this may generate
-		// strange behaviors.
+		// we will now "zero" the encoder readings
+		#ifdef DUMMYMODE // if operating in Dummy Mode, set the initial encoder reading to zero
+			pid[i]->ZeroPID();
+		#else            // else, use the values in homePosition
+			pid[i]->pidReset(pid[i]->GetPIDPosition() - homePosition[i]);
+		#endif
+
 		if (pid[i]->GetPIDPosition() > 3000)
 			pid[i]->pidReset(pid[i]->GetPIDPosition() - 4095);
 
@@ -131,12 +146,6 @@ int main() {
 		pid[i]->SetPIDEnabled(true);
 		pid[i]->SetPIDTimed(pid[i]->GetPIDPosition(), 1000); // !FIXME What does this instruction do?
 	}
-
-
-
-
-
-
 
 	/*
 	 * ======= PART 2b: Initialize HID communication =============================
@@ -156,8 +165,7 @@ int main() {
 	 */
 
 	coms.attach(new PidServer(pid, DOFs));
-	//coms.attach(new LabServer(pid, DOFs));
-	//coms.attach(new PidConfigServer(pid, DOFs));
+//	coms.attach(new PidConfigServer(pid, DOFs));
 
 #ifdef DEBUG_
 	printf("\r\n\r\n Initialization complete. \r\n\r\n");
@@ -183,9 +191,9 @@ int main() {
 	while (1) {
 
 		coms.server();
+		//insert other coms here
 
-		// The following code prints out debug statements.
-#ifdef DEBUG_
+		#ifdef DEBUG_
 			// print encoder values for each joint
 			printf("\r\nEncoder Value = %f , %f , %f", pid[0]->GetPIDPosition(),
 					pid[1]->GetPIDPosition(), pid[2]->GetPIDPosition());
@@ -198,7 +206,7 @@ int main() {
 			printf(" Load Value = %f , %f , %f", pid[0]->loadCell->read(),
 					pid[1]->loadCell->read(), pid[2]->loadCell->read());
 
-#endif // DEBUG
+		#endif // DEBUG
 
 	}
 
