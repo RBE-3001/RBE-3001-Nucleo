@@ -27,13 +27,13 @@
 //------------ PID Constants
 
 //Base PID
-float kp_base = 0.0055; float ki_base = 0.0002; float kd_base = 0.006;
+float kp_base = 0.002; float ki_base = 0.0005; float kd_base = 0.02;
 
 //Shoulder PID
-float kp_arm = 0.01; float ki_arm = 0; float kd_arm = 0;
+float kp_arm = 0.005; float ki_arm = 0.0015; float kd_arm = 0.02;
 
 //Wrist PID
-float kp_wrist = 0.005; float ki_wrist = 0; float kd_wrist = 0;
+float kp_wrist = 0.005; float ki_wrist = 0; float kd_wrist = 0.03;
 
 
 
