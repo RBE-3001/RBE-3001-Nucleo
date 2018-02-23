@@ -75,6 +75,9 @@ void LabServer::event(float * packet){
       //}
     }
 
+  	//bool
+
+
   /*
    * ======= PART 2: Generate a response to be sent back to MATLAB =============
    */

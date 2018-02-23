@@ -164,8 +164,8 @@ int main() {
 	 *            source file
 	 */
 
-	coms.attach(new PidServer(pid, DOFs));
-//	coms.attach(new PidConfigServer(pid, DOFs));
+//	coms.attach(new PidServer(pid, DOFs));
+	coms.attach(new LabServer(pid, DOFs));
 
 #ifdef DEBUG_
 	printf("\r\n\r\n Initialization complete. \r\n\r\n");

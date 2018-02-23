@@ -45,7 +45,7 @@ class LabServer: public PacketEventAbstract
 
  public:
   LabServer (PIDimp ** pidObjects, int numberOfPidChannels)
- 	 :PacketEventAbstract(LAB_SERVER_ID)
+ 	 : PacketEventAbstract(LAB_SERVER_ID)
   {
     myPidObjects = pidObjects;
     myPumberOfPidChannels = numberOfPidChannels;
