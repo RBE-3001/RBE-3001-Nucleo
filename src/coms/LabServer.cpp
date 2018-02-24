@@ -75,7 +75,8 @@ void LabServer::event(float * packet){
       //}
     }
 
-  	//bool
+  	float gripperSetpoint = packet[9];
+  	gripperServo.write(gripperSetpoint);
 
 
   /*
@@ -111,6 +112,4 @@ void LabServer::event(float * packet){
 	  packet[(i*3)+2] = 7;
 */
     }
-
-
 }

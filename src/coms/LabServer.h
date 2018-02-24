@@ -16,7 +16,7 @@
  * IMPORTANT - Multiple communication servers can run in parallel, as shown
  *             in the main file of this firmware
  *             (see 'Part 2b' in /src/Main.cpp). To ensure that communication
- *             packets generated in MATLAB are routed to the appropriate
+ *             packets generated in MATLAB are routServoed to the appropriate
  *             server, we use unique identifiers. The identifier for this
  *             server is the integer number 37.
  *             In general, the identifier can be any 4-byte unsigned
@@ -42,10 +42,11 @@ class LabServer: public PacketEventAbstract
  private:
   PIDimp ** myPidObjects;    // array of PidServers - one for each joint
   int myPumberOfPidChannels;
+  Servo gripperServo;
 
  public:
-  LabServer (PIDimp ** pidObjects, int numberOfPidChannels)
- 	 : PacketEventAbstract(LAB_SERVER_ID)
+  LabServer (PIDimp ** pidObjects, int numberOfPidChannels, PinName gripperPin)
+ 	 : PacketEventAbstract(LAB_SERVER_ID), gripperServo(gripperPin, 5)
   {
     myPidObjects = pidObjects;
     myPumberOfPidChannels = numberOfPidChannels;
