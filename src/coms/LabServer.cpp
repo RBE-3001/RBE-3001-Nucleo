@@ -83,7 +83,7 @@ void LabServer::event(float * packet){
       //}
     }
 
-  	float gripperSetpoint = packet[15];
+  	float gripperSetpoint = packet[1]; //supposed to be packet[15] but it wasn't reading packet[15]
   	gripperServo.write(gripperSetpoint);
 
 
