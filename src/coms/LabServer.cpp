@@ -21,12 +21,17 @@ void LabServer::event(float * packet){
 
   bool skipLink = false; //!FIXME Do we need this? If not, let's get rid of it
 
-  for (int i = 0; i < myPumberOfPidChannels; i++)
+  for (int i = 0; i < myNumberOfPidChannels; i++)
     {
       // extract the three setpoint values (one for each joint) from the packet buffer
-      float setpoint = packet[(i*3)+0];
-      float velocityTarget = 0; // this is currently unused
-      float forceTarget = 0;    // this is currently unused
+      float setpoint = packet[(i*5)+0];
+
+      float gravComp = packet[(i*5)+1];
+
+      float kP = packet[(i*5)+2];
+      float kI = packet[(i*5)+3];
+      float kD = packet[(i*5)+4];
+
       //printf("\r\n %i : %f", i,setpoint);
       // get current position from arm
       float position = myPidObjects[i]->GetPIDPosition();
@@ -37,14 +42,17 @@ void LabServer::event(float * packet){
       //        The if statement below always returns false and therefore we never
       //        enter the clause. Is this code needed? If not, let's get rid of it.
       float timeOfMotion = 0;
-      if(velocityTarget>0)
-	timeOfMotion=(std::abs(setpoint-position)/velocityTarget)*1000;// convert from Tics per second to miliseconds
+//      if(velocityTarget>0)
+//	timeOfMotion=(std::abs(setpoint-position)/velocityTarget)*1000;// convert from Tics per second to miliseconds
 
       // !FIXME what is the `bound' method doing?
       bool newUpdate = !myPidObjects[i]->bound(setpoint,
 					       myPidObjects[i]->state.interpolate.set,
 					       0.01,   // !FIXME need to explain what these constants are
 					       0.01);
+
+      //TODO: Implement a check to only set PID constants when new
+      myPidObjects[i]->setPIDConstants(kP, kI, kD);
 
       if(newUpdate)
 	{
@@ -75,7 +83,7 @@ void LabServer::event(float * packet){
       //}
     }
 
-  	float gripperSetpoint = packet[9];
+  	float gripperSetpoint = packet[15];
   	gripperServo.write(gripperSetpoint);
 
 
@@ -96,7 +104,7 @@ void LabServer::event(float * packet){
    * force readings) and writes it in the response packet.
    */
 
-  for(int i = 0; i < myPumberOfPidChannels; i++)
+  for(int i = 0; i < myNumberOfPidChannels; i++)
     {
 
 	  float position = myPidObjects[i]->GetPIDPosition();

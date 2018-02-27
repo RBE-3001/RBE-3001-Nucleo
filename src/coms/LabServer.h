@@ -41,7 +41,7 @@ class LabServer: public PacketEventAbstract
 {
  private:
   PIDimp ** myPidObjects;    // array of PidServers - one for each joint
-  int myPumberOfPidChannels;
+  int myNumberOfPidChannels;
   Servo gripperServo;
 
  public:
@@ -49,7 +49,7 @@ class LabServer: public PacketEventAbstract
  	 : PacketEventAbstract(LAB_SERVER_ID), gripperServo(gripperPin, 5)
   {
     myPidObjects = pidObjects;
-    myPumberOfPidChannels = numberOfPidChannels;
+    myNumberOfPidChannels = numberOfPidChannels;
   }
 
   // This method is called every time a packet from MATLAB is received
