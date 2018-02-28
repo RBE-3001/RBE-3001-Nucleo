@@ -43,9 +43,9 @@ class LabServer: public PacketEventAbstract
   PIDimp ** myPidObjects;    // array of PidServers - one for each joint
   int myNumberOfPidChannels;
   Servo gripperServo;
-  float MOTORHIGH_TORQUE = 3168.63;
+  float MOTORHIGH_TORQUE = 3.1765;
   float MOTORHIGH_VOLTAGE = 1;
-  float MOTORLOW_TORQUE = 2472.12;
+  float MOTORLOW_TORQUE = 2.4713;
   float MOTORLOW_VOLTAGE = 0.714;
 
   float GRAVITYCOMP_SCALINGFACTOR = 178.5;

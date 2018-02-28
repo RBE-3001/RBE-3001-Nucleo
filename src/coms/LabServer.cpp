@@ -34,14 +34,12 @@ void LabServer::event(float * packet){
       // get current position from arm
       float position = myPidObjects[i]->GetPIDPosition();
 
-      float force = myPidObjects[i]->loadCell->read();
-
       if (i == 1){
-    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * force + GRAVITYCOMP_JOINT1;
-    	  myPidObjects[i]->gravityCompTerm = -map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT1;
+    	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
       } else if (i == 2){
-    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * force + GRAVITYCOMP_JOINT2;
-    	  myPidObjects[i]->gravityCompTerm = -map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT2;
+    	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
       } else {
     	  myPidObjects[i]->gravityCompTerm = 0;
       }
