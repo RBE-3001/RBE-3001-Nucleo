@@ -38,8 +38,8 @@ void LabServer::event(float * packet){
     	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT1;
     	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
       } else if (i == 2){
-    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT2;
-    	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+//    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT2;
+//    	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
       } else {
     	  myPidObjects[i]->gravityCompTerm = 0;
       }

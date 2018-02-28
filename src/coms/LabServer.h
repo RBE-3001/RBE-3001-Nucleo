@@ -48,12 +48,11 @@ class LabServer: public PacketEventAbstract
   float MOTORLOW_TORQUE = 2.4713;
   float MOTORLOW_VOLTAGE = 0.714;
 
-  float GRAVITYCOMP_SCALINGFACTOR = 178.5;
-  float GRAVITYCOMP_JOINT1 = -0.53193*GRAVITYCOMP_SCALINGFACTOR;
-  float GRAVITYCOMP_JOINT2 = -0.47511*GRAVITYCOMP_SCALINGFACTOR;
+  float GRAVITYCOMP_SCALINGFACTOR = 2;
+  float GRAVITYCOMP_JOINT1 = -0.95*GRAVITYCOMP_SCALINGFACTOR;
+  float GRAVITYCOMP_JOINT2 = -0.00001*GRAVITYCOMP_SCALINGFACTOR;
 
- public:
-  LabServer (PIDimp ** pidObjects, int numberOfPidChannels, PinName gripperPin)
+ public:  LabServer (PIDimp ** pidObjects, int numberOfPidChannels, PinName gripperPin)
  	 : PacketEventAbstract(LAB_SERVER_ID), gripperServo(gripperPin, 5)
   {
     myPidObjects = pidObjects;

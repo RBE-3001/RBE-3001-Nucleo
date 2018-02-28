@@ -88,7 +88,7 @@ void PIDimp::MathCalculationPosition( float currentTime)
 {
   //[optional] run user math functions to compute state.Output as a control signal
   RunAbstractPIDCalc( currentTime);
-  //state.Output+=gravityCompTerm;
+  state.Output+=gravityCompTerm;
 }
 
 
