@@ -26,8 +26,6 @@ void LabServer::event(float * packet){
       // extract the three setpoint values (one for each joint) from the packet buffer
       float setpoint = packet[(i*5)+0];
 
-      float gravComp = packet[(i*5)+1];
-
       float kP = packet[(i*5)+2];
       float kI = packet[(i*5)+3];
       float kD = packet[(i*5)+4];
@@ -35,6 +33,18 @@ void LabServer::event(float * packet){
       //printf("\r\n %i : %f", i,setpoint);
       // get current position from arm
       float position = myPidObjects[i]->GetPIDPosition();
+
+      float force = myPidObjects[i]->loadCell->read();
+
+      if (i == 1){
+    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * force + GRAVITYCOMP_JOINT1;
+    	  myPidObjects[i]->gravityCompTerm = -map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+      } else if (i == 2){
+    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * force + GRAVITYCOMP_JOINT2;
+    	  myPidObjects[i]->gravityCompTerm = -map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+      } else {
+    	  myPidObjects[i]->gravityCompTerm = 0;
+      }
 
       // now let's initiate motion to the setpoints
 
@@ -58,12 +68,10 @@ void LabServer::event(float * packet){
 	{
 	  // disable interrupts first
 	  __disable_irq();
-	  myPidObjects[i]->SetPIDEnabled(true); // !FIXME Do we need to do this
-	                                        //  every time?
-	                                        // Can't we just leave it enabled?
+	  myPidObjects[i]->SetPIDEnabled(true);
 
 	  // go to setpoint in timeBetweenPrints ms, linear interpolation
-	  myPidObjects[i]->SetPIDTimed(setpoint, timeOfMotion); // !FIXME what is `timeBetweenPrints'?
+	  myPidObjects[i]->SetPIDTimed(setpoint, timeOfMotion);
 
 	  // re-enable interrupts
 	__enable_irq();

@@ -43,6 +43,14 @@ class LabServer: public PacketEventAbstract
   PIDimp ** myPidObjects;    // array of PidServers - one for each joint
   int myNumberOfPidChannels;
   Servo gripperServo;
+  float MOTORHIGH_TORQUE = 3168.63;
+  float MOTORHIGH_VOLTAGE = 1;
+  float MOTORLOW_TORQUE = 2472.12;
+  float MOTORLOW_VOLTAGE = 0.714;
+
+  float GRAVITYCOMP_SCALINGFACTOR = 178.5;
+  float GRAVITYCOMP_JOINT1 = -0.53193*GRAVITYCOMP_SCALINGFACTOR;
+  float GRAVITYCOMP_JOINT2 = -0.47511*GRAVITYCOMP_SCALINGFACTOR;
 
  public:
   LabServer (PIDimp ** pidObjects, int numberOfPidChannels, PinName gripperPin)
@@ -55,6 +63,12 @@ class LabServer: public PacketEventAbstract
   // This method is called every time a packet from MATLAB is received
   // via HID
   void event(float * buffer);
+
+  float map(float x, float in_min, float in_max, float out_min, float out_max)
+  {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
 };
 
 #endif /* end of include guard: RBE3001_PID_SERVER */
