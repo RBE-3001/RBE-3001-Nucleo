@@ -27,13 +27,13 @@
 //------------ PID Constants
 
 //Base PID
-float kp_base = 0.002; float ki_base = 0.0005; float kd_base = 0.02;
+float kp_base = 0; float ki_base = 0; float kd_base = 0;
 
 //Shoulder PID
-float kp_arm = 0.005; float ki_arm = 0.0015; float kd_arm = 0.02;
+float kp_arm = 0; float ki_arm = 0; float kd_arm = 0;
 
 //Wrist PID
-float kp_wrist = 0.005; float ki_wrist = 0; float kd_wrist = 0.03;
+float kp_wrist = 0; float ki_wrist = 0; float kd_wrist = 0;
 
 
 
@@ -166,8 +166,7 @@ int main() {
 	 *            source file
 	 */
 
-	coms.attach(new PidServer(pid, DOFs));
-//	coms.attach(new PidConfigServer(pid, DOFs));
+	coms.attach(new LabServer(pid, DOFs, GRIPPER_SERVO));
 
 #ifdef DEBUG_
 	printf("\r\n\r\n Initialization complete. \r\n\r\n");

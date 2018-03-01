@@ -16,7 +16,7 @@
  * IMPORTANT - Multiple communication servers can run in parallel, as shown
  *             in the main file of this firmware
  *             (see 'Part 2b' in /src/Main.cpp). To ensure that communication
- *             packets generated in MATLAB are routed to the appropriate
+ *             packets generated in MATLAB are routServoed to the appropriate
  *             server, we use unique identifiers. The identifier for this
  *             server is the integer number 37.
  *             In general, the identifier can be any 4-byte unsigned
@@ -41,19 +41,33 @@ class LabServer: public PacketEventAbstract
 {
  private:
   PIDimp ** myPidObjects;    // array of PidServers - one for each joint
-  int myPumberOfPidChannels;
+  int myNumberOfPidChannels;
+  Servo gripperServo;
+  float MOTORHIGH_TORQUE = 3.1765;
+  float MOTORHIGH_VOLTAGE = 1;
+  float MOTORLOW_TORQUE = 2.4713;
+  float MOTORLOW_VOLTAGE = 0.714;
 
- public:
-  LabServer (PIDimp ** pidObjects, int numberOfPidChannels)
- 	 :PacketEventAbstract(LAB_SERVER_ID)
+  float GRAVITYCOMP_SCALINGFACTOR = 2;
+  float GRAVITYCOMP_JOINT1 = -0.95*GRAVITYCOMP_SCALINGFACTOR;
+  float GRAVITYCOMP_JOINT2 = -0.00001*GRAVITYCOMP_SCALINGFACTOR;
+
+ public:  LabServer (PIDimp ** pidObjects, int numberOfPidChannels, PinName gripperPin)
+ 	 : PacketEventAbstract(LAB_SERVER_ID), gripperServo(gripperPin, 5)
   {
     myPidObjects = pidObjects;
-    myPumberOfPidChannels = numberOfPidChannels;
+    myNumberOfPidChannels = numberOfPidChannels;
   }
 
   // This method is called every time a packet from MATLAB is received
   // via HID
   void event(float * buffer);
+
+  float map(float x, float in_min, float in_max, float out_min, float out_max)
+  {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
 };
 
 #endif /* end of include guard: PID_SERVER */

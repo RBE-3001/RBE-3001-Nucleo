@@ -21,15 +21,28 @@ void LabServer::event(float * packet){
 
   bool skipLink = false; //!FIXME Do we need this? If not, let's get rid of it
 
-  for (int i = 0; i < myPumberOfPidChannels; i++)
+  for (int i = 0; i < myNumberOfPidChannels; i++)
     {
       // extract the three setpoint values (one for each joint) from the packet buffer
-      float setpoint = packet[(i*3)+0];
-      float velocityTarget = 0; // this is currently unused
-      float forceTarget = 0;    // this is currently unused
+      float setpoint = packet[(i*5)+0];
+
+      float kP = packet[(i*5)+2];
+      float kI = packet[(i*5)+3];
+      float kD = packet[(i*5)+4];
+
       //printf("\r\n %i : %f", i,setpoint);
       // get current position from arm
       float position = myPidObjects[i]->GetPIDPosition();
+
+      if (i == 1){
+    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT1;
+    	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+      } else if (i == 2){
+//    	  float torque = (double)GRAVITYCOMP_SCALINGFACTOR * myPidObjects[i]->loadCell->read();// + GRAVITYCOMP_JOINT2;
+//    	  myPidObjects[i]->gravityCompTerm = map(torque, MOTORLOW_TORQUE, MOTORHIGH_TORQUE, MOTORLOW_VOLTAGE, MOTORHIGH_VOLTAGE);
+      } else {
+    	  myPidObjects[i]->gravityCompTerm = 0;
+      }
 
       // now let's initiate motion to the setpoints
 
@@ -37,8 +50,8 @@ void LabServer::event(float * packet){
       //        The if statement below always returns false and therefore we never
       //        enter the clause. Is this code needed? If not, let's get rid of it.
       float timeOfMotion = 0;
-      if(velocityTarget>0)
-	timeOfMotion=(std::abs(setpoint-position)/velocityTarget)*1000;// convert from Tics per second to miliseconds
+//      if(velocityTarget>0)
+//	timeOfMotion=(std::abs(setpoint-position)/velocityTarget)*1000;// convert from Tics per second to miliseconds
 
       // !FIXME what is the `bound' method doing?
       bool newUpdate = !myPidObjects[i]->bound(setpoint,
@@ -46,16 +59,17 @@ void LabServer::event(float * packet){
 					       0.01,   // !FIXME need to explain what these constants are
 					       0.01);
 
+      //TODO: Implement a check to only set PID constants when new
+      myPidObjects[i]->setPIDConstants(kP, kI, kD);
+
       if(newUpdate)
 	{
 	  // disable interrupts first
 	  __disable_irq();
-	  myPidObjects[i]->SetPIDEnabled(true); // !FIXME Do we need to do this
-	                                        //  every time?
-	                                        // Can't we just leave it enabled?
+	  myPidObjects[i]->SetPIDEnabled(true);
 
 	  // go to setpoint in timeBetweenPrints ms, linear interpolation
-	  myPidObjects[i]->SetPIDTimed(setpoint, timeOfMotion); // !FIXME what is `timeBetweenPrints'?
+	  myPidObjects[i]->SetPIDTimed(setpoint, timeOfMotion);
 
 	  // re-enable interrupts
 	__enable_irq();
@@ -75,6 +89,10 @@ void LabServer::event(float * packet){
       //}
     }
 
+  	float gripperSetpoint = packet[1]; //supposed to be packet[15] but it wasn't reading packet[15]
+  	gripperServo.write(gripperSetpoint);
+
+
   /*
    * ======= PART 2: Generate a response to be sent back to MATLAB =============
    */
@@ -92,7 +110,7 @@ void LabServer::event(float * packet){
    * force readings) and writes it in the response packet.
    */
 
-  for(int i = 0; i < myPumberOfPidChannels; i++)
+  for(int i = 0; i < myNumberOfPidChannels; i++)
     {
 	  float position = myPidObjects[i]->GetPIDPosition();
       float velocity = myPidObjects[i]->getVelocity();
@@ -102,6 +120,4 @@ void LabServer::event(float * packet){
       packet[(i*3)+1] = velocity;
       packet[(i*3)+2] = torque;
     }
-
-
 }
